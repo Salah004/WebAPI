@@ -13,6 +13,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
+using Swashbuckle.AspNetCore.Swagger;
 using WebAPI.Data;
 
 namespace WebAPI
@@ -29,7 +30,16 @@ namespace WebAPI
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+
             services.AddMvc();
+       
+            services.AddSwaggerGen(c =>
+            {
+                c.SwaggerDoc("v1", new Info { Title = "WebAPI", Description = "Auth Web API", Version = "1.0" });
+                var xmlPath = System.AppDomain.CurrentDomain.BaseDirectory + @"WebAPI.xml";
+                c.IncludeXmlComments(xmlPath);
+            });
+
             services.AddDbContext<ApplicationDbContext>( options => options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
             services.AddIdentity<ApplicationUser, IdentityRole>()
                     .AddEntityFrameworkStores<ApplicationDbContext>()
@@ -75,6 +85,9 @@ namespace WebAPI
             app.UseAuthentication();
 
             app.UseMvc();
+
+            app.UseSwagger();
+            app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "WebAPI"));
         }
     }
 }

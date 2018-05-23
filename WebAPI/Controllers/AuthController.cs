@@ -24,7 +24,11 @@ namespace WebAPI.Controllers
             this.userManager = userManager;
         }
 
-
+        /// <summary>
+        /// Login
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
         [HttpPost]
         [Route("login")]
         public async Task <IActionResult> Login([FromBody] LoginModel model)

@@ -38,27 +38,7 @@ namespace WebAPI.Controllers
             var user = await userManager.FindByNameAsync(model.Username);
             if (user != null && await userManager.CheckPasswordAsync(user, model.Password))
             {
-                var claims = new[]
-                {
-                    new Claim(JwtRegisteredClaimNames.Sub,user.UserName),
-                    new Claim(JwtRegisteredClaimNames.Jti,Guid.NewGuid().ToString())
-                };
-
-                var signingKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("MySuperSecureKey"));
-
-                var token = new JwtSecurityToken(
-                    issuer: "http://www.anem.dz/",
-                    audience: "http://www.anem.dz/",
-                    expires: DateTime.UtcNow.AddHours(1),
-                    claims: claims,
-                    signingCredentials: new Microsoft.IdentityModel.Tokens.SigningCredentials(signingKey, SecurityAlgorithms.HmacSha256)
-                    );
-
-                return Ok(new
-                {
-                    token = new JwtSecurityTokenHandler().WriteToken(token),
-                    expiration = token.ValidTo
-                });
+                return await GenerateJwtToken(user);
             }
             return Unauthorized();
         }
@@ -84,31 +64,35 @@ namespace WebAPI.Controllers
             if (result.Succeeded)
             {
                 await signInManager.SignInAsync(user, false);
+                return await GenerateJwtToken(user);
+            }
 
-                var claims = new[]
+            throw new ApplicationException("UNKNOWN_ERROR");
+        }
+
+        private async Task<IActionResult> GenerateJwtToken(ApplicationUser user)
+        {
+            var claims = new[]
                 {
                     new Claim(JwtRegisteredClaimNames.Sub,user.UserName),
                     new Claim(JwtRegisteredClaimNames.Jti,Guid.NewGuid().ToString())
                 };
 
-                var signingKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("MySuperSecureKey"));
+            var signingKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("MySuperSecureKey"));
 
-                var token = new JwtSecurityToken(
-                    issuer: "http://www.anem.dz/",
-                    audience: "http://www.anem.dz/",
-                    expires: DateTime.UtcNow.AddHours(1),
-                    claims: claims,
-                    signingCredentials: new Microsoft.IdentityModel.Tokens.SigningCredentials(signingKey, SecurityAlgorithms.HmacSha256)
-                    );
+            var token = new JwtSecurityToken(
+                issuer: "http://www.anem.dz/",
+                audience: "http://www.anem.dz/",
+                expires: DateTime.UtcNow.AddHours(1),
+                claims: claims,
+                signingCredentials: new Microsoft.IdentityModel.Tokens.SigningCredentials(signingKey, SecurityAlgorithms.HmacSha256)
+                );
 
-                return Ok(new
-                {
-                    token = new JwtSecurityTokenHandler().WriteToken(token),
-                    expiration = token.ValidTo
-                });
-            }
-
-            throw new ApplicationException("UNKNOWN_ERROR");
+            return Ok(new
+            {
+                token = new JwtSecurityTokenHandler().WriteToken(token),
+                expiration = token.ValidTo
+            });
         }
     }
 }

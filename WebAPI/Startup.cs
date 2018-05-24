@@ -32,14 +32,8 @@ namespace WebAPI
         {
 
             services.AddMvc();
-       
-            services.AddSwaggerGen(c =>
-            {
-                c.SwaggerDoc("v1", new Info { Title = "WebAPI", Description = "Auth Web API", Version = "1.0" });
-                var xmlPath = System.AppDomain.CurrentDomain.BaseDirectory + @"WebAPI.xml";
-                c.IncludeXmlComments(xmlPath);
-            });
-
+            
+            services.AddSwaggerDocumentation();
             services.AddDbContext<ApplicationDbContext>( options => options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
             services.AddIdentity<ApplicationUser, IdentityRole>()
                     .AddEntityFrameworkStores<ApplicationDbContext>()
@@ -75,6 +69,7 @@ namespace WebAPI
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
+                app.UseSwaggerDocumentation();
             }
 
             SeedDataBase.Initialize(app.ApplicationServices
@@ -84,10 +79,7 @@ namespace WebAPI
 
             app.UseAuthentication();
 
-            app.UseMvc();
-
-            app.UseSwagger();
-            app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "WebAPI"));
+            app.UseMvc();           
         }
     }
 }

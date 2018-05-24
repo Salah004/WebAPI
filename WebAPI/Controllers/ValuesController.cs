@@ -19,9 +19,11 @@ namespace WebAPI.Controllers
             this.context = context;
         }
 
-
-
         // GET api/values
+        /// <summary>
+        /// Values
+        /// </summary>
+        /// <returns></returns>
         [HttpGet]
         public IEnumerable<string> Get()
         {

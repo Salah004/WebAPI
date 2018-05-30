@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace WebAPI.Model
+namespace WebAPI.Models
 {
     public class RegisterModel
     {
@@ -13,9 +13,11 @@ namespace WebAPI.Model
 
         [Required(ErrorMessage = "Password is required.")]
         [StringLength(100, ErrorMessage = "password min length", MinimumLength = 6)]
+        [DataType(DataType.Password)]
         public string Password { get; set; }
 
         [Required(ErrorMessage = "Email is required.")]
+        [EmailAddress]
         public string Email { get; set; }
     }
 }

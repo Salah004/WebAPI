@@ -35,7 +35,7 @@ namespace WebAPI
             app.UseSwaggerUI(c =>
             {
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "WebAPI");           
-                c.DocExpansion("none");
+                //c.DocExpansion("none");
             });
 
             return app;

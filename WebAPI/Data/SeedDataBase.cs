@@ -18,11 +18,11 @@ namespace WebAPI.Data
             {
                 ApplicationUser user = new ApplicationUser()
                 {
-                    Email = "test@anem.dz",
+                    Email = "admin@gmail.com",
                     SecurityStamp = Guid.NewGuid().ToString(),
-                    UserName = "AnemUser"
+                    UserName = "Admin"
                 };
-                userManager.CreateAsync(user, "AnemUser@@123");
+                userManager.CreateAsync(user, "Root@@123");
             }
         }
     }

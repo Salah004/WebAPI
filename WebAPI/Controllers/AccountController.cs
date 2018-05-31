@@ -49,6 +49,11 @@ namespace WebAPI.Controllers
         [Route("register")]
         public async Task<IActionResult> Register([FromBody] RegisterModel model)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
             ApplicationUser user = new ApplicationUser()
             {
                 Email = model.Email,
@@ -64,7 +69,7 @@ namespace WebAPI.Controllers
                 return await GenerateJwtToken(user);
             }
 
-            throw new ApplicationException("UNKNOWN_ERROR");
+            return BadRequest(result);         
         }
 
         private async Task<IActionResult> GenerateJwtToken(ApplicationUser user)

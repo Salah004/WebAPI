@@ -12,7 +12,7 @@ namespace WebAPI.Models
         public string Username { get; set; }
 
         [Required(ErrorMessage = "Password is required.")]
-        [StringLength(100, ErrorMessage = "password min length", MinimumLength = 6)]
+        [StringLength(100, ErrorMessage = "The {0} must be at least {2} characters long.", MinimumLength = 6)]
         [DataType(DataType.Password)]
         public string Password { get; set; }
 
